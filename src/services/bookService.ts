@@ -7,7 +7,10 @@ export interface Book {
   isbn: string;
   description: string;
   cover_image: string;
-  published_year: number;
+  total_pages: number;
+  publisher: string;
+  publication_date: string;
+  language: string;
   created_at: string;
   updated_at: string;
 }
@@ -30,9 +33,28 @@ export interface PaginatedResponse<T> {
   };
 }
 
+export interface CreateBookData {
+  title: string;
+  author: string;
+  isbn: string;
+  description: string;
+  total_pages: number;
+  cover_image: string;
+  publisher: string;
+  publication_date: string;
+  language: string;
+}
+
+export interface UpdateBookData extends Partial<CreateBookData> {}
+
 const bookService = {
   getBooks: async (filters: BookFilters = {}): Promise<PaginatedResponse<Book>> => {
     const response = await api.get('/books', { params: filters });
+    return response.data;
+  },
+
+  searchBooks: async (query: string): Promise<PaginatedResponse<Book>> => {
+    const response = await api.get('/books/search', { params: { search: query } });
     return response.data;
   },
 
@@ -41,20 +63,88 @@ const bookService = {
     return response.data;
   },
 
-  addToFavorites: async (bookId: number): Promise<void> => {
-    await api.post(`/books/${bookId}/favorite`);
+  createBook: async (data: CreateBookData): Promise<Book> => {
+    const response = await api.post('/books', data);
+    return response.data;
   },
 
-  removeFromFavorites: async (bookId: number): Promise<void> => {
-    await api.delete(`/books/${bookId}/favorite`);
+  updateBook: async (id: number, data: UpdateBookData): Promise<Book> => {
+    const response = await api.put(`/books/${id}`, data);
+    return response.data;
   },
 
-  addToShelf: async (bookId: number, shelfId: number): Promise<void> => {
-    await api.post(`/shelves/${shelfId}/books`, { book_id: bookId });
+  deleteBook: async (id: number): Promise<void> => {
+    await api.delete(`/books/${id}`);
   },
 
-  removeFromShelf: async (bookId: number, shelfId: number): Promise<void> => {
-    await api.delete(`/shelves/${shelfId}/books/${bookId}`);
+  // Reviews
+  getBookReviews: async (bookId: number, includeSpoilers = false) => {
+    const response = await api.get(`/books/${bookId}/reviews`, {
+      params: { spoilers: includeSpoilers },
+    });
+    return response.data;
+  },
+
+  createBookReview: async (bookId: number, data: {
+    rating: number;
+    review: string;
+    contains_spoilers: boolean;
+  }) => {
+    const response = await api.post(`/books/${bookId}/reviews`, data);
+    return response.data;
+  },
+
+  updateBookReview: async (
+    bookId: number,
+    reviewId: number,
+    data: {
+      rating: number;
+      review: string;
+      contains_spoilers: boolean;
+    }
+  ) => {
+    const response = await api.put(`/books/${bookId}/reviews/${reviewId}`, data);
+    return response.data;
+  },
+
+  deleteBookReview: async (bookId: number, reviewId: number) => {
+    await api.delete(`/books/${bookId}/reviews/${reviewId}`);
+  },
+
+  getUserReviews: async () => {
+    const response = await api.get('/user/reviews');
+    return response.data;
+  },
+
+  // Reading Progress
+  getReadingProgress: async (status?: 'not_started' | 'in_progress' | 'completed') => {
+    const response = await api.get('/reading-progress', {
+      params: { status },
+    });
+    return response.data;
+  },
+
+  getReadingStatistics: async () => {
+    const response = await api.get('/reading-progress/statistics');
+    return response.data;
+  },
+
+  getBookReadingProgress: async (bookId: number) => {
+    const response = await api.get(`/reading-progress/books/${bookId}`);
+    return response.data;
+  },
+
+  updateReadingProgress: async (
+    bookId: number,
+    data: {
+      status: 'not_started' | 'in_progress' | 'completed';
+      current_page: number;
+      reading_time_minutes: number;
+      notes?: string;
+    }
+  ) => {
+    const response = await api.put(`/reading-progress/books/${bookId}`, data);
+    return response.data;
   },
 };
 

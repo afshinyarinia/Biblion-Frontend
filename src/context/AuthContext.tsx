@@ -13,7 +13,7 @@ interface AuthContextType {
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -35,11 +35,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const token = localStorage.getItem('auth_token');
       if (token) {
-        const response = await api.get('/user');
+        const response = await api.get('/auth/user');
         setUser(response.data);
       }
     } catch (error) {
       console.error('Auth check failed:', error);
+      localStorage.removeItem('auth_token');
     } finally {
       setLoading(false);
     }
@@ -48,8 +49,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = async (email: string, password: string) => {
     try {
       setError(null);
-      const response = await api.post('/login', { email, password });
-      localStorage.setItem('auth_token', response.data.token);
+      const response = await api.post('/auth/login', { email, password });
+      localStorage.setItem('auth_token', response.data.access_token);
       setUser(response.data.user);
     } catch (error) {
       setError('Invalid credentials');
@@ -60,8 +61,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const register = async (name: string, email: string, password: string) => {
     try {
       setError(null);
-      const response = await api.post('/register', { name, email, password });
-      localStorage.setItem('auth_token', response.data.token);
+      const response = await api.post('/auth/register', {
+        name,
+        email,
+        password,
+        password_confirmation: password,
+      });
+      localStorage.setItem('auth_token', response.data.access_token);
       setUser(response.data.user);
     } catch (error) {
       setError('Registration failed');
@@ -69,9 +75,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('auth_token');
-    setUser(null);
+  const logout = async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      localStorage.removeItem('auth_token');
+      setUser(null);
+    }
   };
 
   const value = {

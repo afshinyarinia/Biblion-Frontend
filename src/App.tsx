@@ -5,6 +5,8 @@ import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import BooksPage from './pages/books/BooksPage';
 import BookDetailsPage from './pages/books/BookDetailsPage';
+import ShelvesPage from './pages/shelves/ShelvesPage';
+import ShelfDetailsPage from './pages/shelves/ShelfDetailsPage';
 
 // Protected Route wrapper component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -65,7 +67,15 @@ function App() {
               path="/shelves"
               element={
                 <ProtectedRoute>
-                  <div>Shelves Page (TODO)</div>
+                  <ShelvesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/shelves/:id"
+              element={
+                <ProtectedRoute>
+                  <ShelfDetailsPage />
                 </ProtectedRoute>
               }
             />
