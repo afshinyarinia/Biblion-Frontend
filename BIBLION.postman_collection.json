@@ -1,0 +1,724 @@
+{
+	"info": {
+		"_postman_id": "1234567-89ab-cdef-0123-456789abcdef",
+		"name": "BIBLION",
+		"description": "API collection for BIBLION - Book Management System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000/api/v1",
+			"type": "string"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{auth_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"auth_token\", jsonData.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "logout"]
+						}
+					}
+				},
+				{
+					"name": "Get User Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/user",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "user"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Books",
+			"item": [
+				{
+					"name": "List Books",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/books",
+							"host": ["{{base_url}}"],
+							"path": ["books"],
+							"query": [
+								{
+									"key": "search",
+									"value": "harry potter",
+									"description": "Search by title, author, or ISBN",
+									"disabled": true
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Search Books",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/books/search?search=gatsby",
+							"host": ["{{base_url}}"],
+							"path": ["books", "search"],
+							"query": [
+								{
+									"key": "search",
+									"value": "gatsby",
+									"description": "Search term"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Book",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"The Great Gatsby\",\n    \"author\": \"F. Scott Fitzgerald\",\n    \"isbn\": \"9780743273565\",\n    \"description\": \"The Great American Novel\",\n    \"total_pages\": 180,\n    \"cover_image\": \"https://example.com/cover.jpg\",\n    \"publisher\": \"Charles Scribner's Sons\",\n    \"publication_date\": \"1925-04-10\",\n    \"language\": \"en\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/books",
+							"host": ["{{base_url}}"],
+							"path": ["books"]
+						}
+					}
+				},
+				{
+					"name": "Get Book",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/books/:id",
+							"host": ["{{base_url}}"],
+							"path": ["books", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Book",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Title\",\n    \"author\": \"Updated Author\",\n    \"isbn\": \"9780743273566\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/books/:id",
+							"host": ["{{base_url}}"],
+							"path": ["books", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Book",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/books/:id",
+							"host": ["{{base_url}}"],
+							"path": ["books", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Shelves",
+			"item": [
+				{
+					"name": "List Shelves",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/shelves",
+							"host": ["{{base_url}}"],
+							"path": ["shelves"]
+						}
+					}
+				},
+				{
+					"name": "Create Shelf",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"My Reading List\",\n    \"description\": \"Books I want to read\",\n    \"is_public\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/shelves",
+							"host": ["{{base_url}}"],
+							"path": ["shelves"]
+						}
+					}
+				},
+				{
+					"name": "Get Shelf",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/shelves/:id",
+							"host": ["{{base_url}}"],
+							"path": ["shelves", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Shelf",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Name\",\n    \"description\": \"Updated Description\",\n    \"is_public\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/shelves/:id",
+							"host": ["{{base_url}}"],
+							"path": ["shelves", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Shelf",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/shelves/:id",
+							"host": ["{{base_url}}"],
+							"path": ["shelves", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Add Book to Shelf",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"book_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/shelves/:id/books",
+							"host": ["{{base_url}}"],
+							"path": ["shelves", ":id", "books"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Remove Book from Shelf",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/shelves/:shelf_id/books/:book_id",
+							"host": ["{{base_url}}"],
+							"path": ["shelves", ":shelf_id", "books", ":book_id"],
+							"variable": [
+								{
+									"key": "shelf_id",
+									"value": "1"
+								},
+								{
+									"key": "book_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Reading Progress",
+			"item": [
+				{
+					"name": "List Reading Progress",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/reading-progress",
+							"host": ["{{base_url}}"],
+							"path": ["reading-progress"],
+							"query": [
+								{
+									"key": "status",
+									"value": "in_progress",
+									"description": "Filter by status (not_started, in_progress, completed)",
+									"disabled": true
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Reading Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/reading-progress/statistics",
+							"host": ["{{base_url}}"],
+							"path": ["reading-progress", "statistics"]
+						}
+					}
+				},
+				{
+					"name": "Get Book Reading Progress",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/reading-progress/books/:book_id",
+							"host": ["{{base_url}}"],
+							"path": ["reading-progress", "books", ":book_id"],
+							"variable": [
+								{
+									"key": "book_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Reading Progress",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"in_progress\",\n    \"current_page\": 50,\n    \"reading_time_minutes\": 30,\n    \"notes\": \"Really enjoying this book!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/reading-progress/books/:book_id",
+							"host": ["{{base_url}}"],
+							"path": ["reading-progress", "books", ":book_id"],
+							"variable": [
+								{
+									"key": "book_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Book Reviews",
+			"item": [
+				{
+					"name": "List Book Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/books/:book_id/reviews?spoilers=false",
+							"host": ["{{base_url}}"],
+							"path": ["books", ":book_id", "reviews"],
+							"query": [
+								{
+									"key": "spoilers",
+									"value": "false",
+									"description": "Filter out reviews containing spoilers"
+								}
+							],
+							"variable": [
+								{
+									"key": "book_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Book Review",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"rating\": 5,\n    \"review\": \"This is an amazing book! I loved every page.\",\n    \"contains_spoilers\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/books/:book_id/reviews",
+							"host": ["{{base_url}}"],
+							"path": ["books", ":book_id", "reviews"],
+							"variable": [
+								{
+									"key": "book_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Book Review",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"rating\": 4,\n    \"review\": \"After a second read, I still enjoy it but noticed some flaws.\",\n    \"contains_spoilers\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/books/:book_id/reviews/:review_id",
+							"host": ["{{base_url}}"],
+							"path": ["books", ":book_id", "reviews", ":review_id"],
+							"variable": [
+								{
+									"key": "book_id",
+									"value": "1"
+								},
+								{
+									"key": "review_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Book Review",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/books/:book_id/reviews/:review_id",
+							"host": ["{{base_url}}"],
+							"path": ["books", ":book_id", "reviews", ":review_id"],
+							"variable": [
+								{
+									"key": "book_id",
+									"value": "1"
+								},
+								{
+									"key": "review_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List User Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/reviews",
+							"host": ["{{base_url}}"],
+							"path": ["user", "reviews"]
+						}
+					}
+				}
+			]
+		}
+	]
+} 
