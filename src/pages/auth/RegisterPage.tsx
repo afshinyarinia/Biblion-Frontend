@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import React, { useState, FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
@@ -24,7 +24,7 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      await register(name, email, password);
+      await register(name, email, password, passwordConfirmation);
       navigate('/');
     } catch (error) {
       console.error('Registration failed:', error);
@@ -111,11 +111,11 @@ export default function RegisterPage() {
               />
             </div>
             <div>
-              <label htmlFor="password-confirmation" className="sr-only">
+              <label htmlFor="password_confirmation" className="sr-only">
                 Confirm password
               </label>
               <input
-                id="password-confirmation"
+                id="password_confirmation"
                 name="password_confirmation"
                 type="password"
                 autoComplete="new-password"

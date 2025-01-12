@@ -177,14 +177,74 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/books/search?search=gatsby",
+							"raw": "{{base_url}}/books/search?search=gatsby&categories=1,4&from_date=2020-01-01&to_date=2024-12-31&language=en&min_rating=4&max_rating=5&min_pages=100&max_pages=500&publisher=penguin&sort_by=reviews_avg_rating&sort_direction=desc&recommended=true",
 							"host": ["{{base_url}}"],
 							"path": ["books", "search"],
 							"query": [
 								{
 									"key": "search",
 									"value": "gatsby",
-									"description": "Search term"
+									"description": "Search term for title, author, ISBN, or description"
+								},
+								{
+									"key": "categories",
+									"value": "1,4",
+									"description": "Comma-separated category IDs"
+								},
+								{
+									"key": "from_date",
+									"value": "2020-01-01",
+									"description": "Publication date range start"
+								},
+								{
+									"key": "to_date",
+									"value": "2024-12-31",
+									"description": "Publication date range end"
+								},
+								{
+									"key": "language",
+									"value": "en",
+									"description": "Book language code"
+								},
+								{
+									"key": "min_rating",
+									"value": "4",
+									"description": "Minimum average rating"
+								},
+								{
+									"key": "max_rating",
+									"value": "5",
+									"description": "Maximum average rating"
+								},
+								{
+									"key": "min_pages",
+									"value": "100",
+									"description": "Minimum page count"
+								},
+								{
+									"key": "max_pages",
+									"value": "500",
+									"description": "Maximum page count"
+								},
+								{
+									"key": "publisher",
+									"value": "penguin",
+									"description": "Publisher name"
+								},
+								{
+									"key": "sort_by",
+									"value": "reviews_avg_rating",
+									"description": "Sort field (title, author, publication_date, created_at, reviews_count, shelves_count, reviews_avg_rating)"
+								},
+								{
+									"key": "sort_direction",
+									"value": "desc",
+									"description": "Sort direction (asc, desc)"
+								},
+								{
+									"key": "recommended",
+									"value": "true",
+									"description": "Include recommendations based on user's history"
 								}
 							]
 						}
@@ -715,6 +775,363 @@
 							"raw": "{{base_url}}/user/reviews",
 							"host": ["{{base_url}}"],
 							"path": ["user", "reviews"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Reading Goals",
+			"item": [
+				{
+					"name": "List Reading Goals",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reading-goals",
+							"host": ["{{base_url}}"],
+							"path": ["reading-goals"]
+						}
+					}
+				},
+				{
+					"name": "Get Current Year Goal",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reading-goals/current",
+							"host": ["{{base_url}}"],
+							"path": ["reading-goals", "current"]
+						}
+					}
+				},
+				{
+					"name": "Create Reading Goal",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"year\": 2024,\n    \"target_books\": 12,\n    \"target_pages\": 3600\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/reading-goals",
+							"host": ["{{base_url}}"],
+							"path": ["reading-goals"]
+						}
+					}
+				},
+				{
+					"name": "Update Reading Goal",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"target_books\": 24,\n    \"target_pages\": 7200\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/reading-goals/:id",
+							"host": ["{{base_url}}"],
+							"path": ["reading-goals", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Reading Goal",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reading-goals/:id",
+							"host": ["{{base_url}}"],
+							"path": ["reading-goals", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Followers",
+			"item": [
+				{
+					"name": "List Followers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/followers",
+							"host": ["{{base_url}}"],
+							"path": ["followers"]
+						}
+					}
+				},
+				{
+					"name": "List Following",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/following",
+							"host": ["{{base_url}}"],
+							"path": ["following"]
+						}
+					}
+				},
+				{
+					"name": "Follow User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/:user_id/follow",
+							"host": ["{{base_url}}"],
+							"path": ["users", ":user_id", "follow"],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Unfollow User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/:user_id/unfollow",
+							"host": ["{{base_url}}"],
+							"path": ["users", ":user_id", "unfollow"],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Activity Feed",
+			"item": [
+				{
+					"name": "Get Activity Feed",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/feed",
+							"host": ["{{base_url}}"],
+							"path": ["feed"]
+						}
+					}
+				},
+				{
+					"name": "Get User Activities",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/activities",
+							"host": ["{{base_url}}"],
+							"path": ["activities"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Reading Challenges",
+			"item": [
+				{
+					"name": "List Reading Challenges",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/reading-challenges?active_only=true&featured=false",
+							"host": ["{{base_url}}"],
+							"path": ["reading-challenges"],
+							"query": [
+								{
+									"key": "active_only",
+									"value": "true"
+								},
+								{
+									"key": "featured",
+									"value": "false"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Reading Challenge",
+					"request": {
+						"method": "POST",
+						"url": {
+							"raw": "{{base_url}}/reading-challenges",
+							"host": ["{{base_url}}"],
+							"path": ["reading-challenges"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": {
+								"title": "Summer Reading Challenge",
+								"description": "Read 10 books during summer",
+								"start_date": "2024-06-01",
+								"end_date": "2024-08-31",
+								"requirements": {
+									"fiction": 5,
+									"non_fiction": 5
+								},
+								"is_public": true
+							}
+						}
+					}
+				},
+				{
+					"name": "View Reading Challenge",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/reading-challenges/:id",
+							"host": ["{{base_url}}"],
+							"path": ["reading-challenges", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Reading Challenge",
+					"request": {
+						"method": "PUT",
+						"url": {
+							"raw": "{{base_url}}/reading-challenges/:id",
+							"host": ["{{base_url}}"],
+							"path": ["reading-challenges", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": {
+								"title": "Updated Challenge Title",
+								"description": "Updated challenge description"
+							}
+						}
+					}
+				},
+				{
+					"name": "Join Reading Challenge",
+					"request": {
+						"method": "POST",
+						"url": {
+							"raw": "{{base_url}}/reading-challenges/:id/join",
+							"host": ["{{base_url}}"],
+							"path": ["reading-challenges", ":id", "join"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Add Book to Challenge",
+					"request": {
+						"method": "POST",
+						"url": {
+							"raw": "{{base_url}}/reading-challenges/:challenge_id/books/:book_id",
+							"host": ["{{base_url}}"],
+							"path": ["reading-challenges", ":challenge_id", "books", ":book_id"],
+							"variable": [
+								{
+									"key": "challenge_id",
+									"value": "1"
+								},
+								{
+									"key": "book_id",
+									"value": "1"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": {
+								"requirement_key": "fiction"
+							}
+						}
+					}
+				},
+				{
+					"name": "Remove Book from Challenge",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{base_url}}/reading-challenges/:challenge_id/books/:book_id",
+							"host": ["{{base_url}}"],
+							"path": ["reading-challenges", ":challenge_id", "books", ":book_id"],
+							"variable": [
+								{
+									"key": "challenge_id",
+									"value": "1"
+								},
+								{
+									"key": "book_id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List User's Challenges",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/user/reading-challenges",
+							"host": ["{{base_url}}"],
+							"path": ["user", "reading-challenges"]
 						}
 					}
 				}

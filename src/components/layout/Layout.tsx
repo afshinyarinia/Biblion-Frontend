@@ -1,105 +1,92 @@
-import { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import {
+  BookOpenIcon,
+  RectangleStackIcon,
+  ChartBarIcon,
+  TrophyIcon,
+  RssIcon,
+  UserIcon,
+} from '@heroicons/react/24/outline';
 
-interface LayoutProps {
-  children: ReactNode;
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(' ');
 }
 
-export default function Layout({ children }: LayoutProps) {
+export default function Layout() {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
 
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
+
+  const navigation = [
+    { name: 'Books', to: '/books', icon: BookOpenIcon },
+    { name: 'Shelves', to: '/shelves', icon: RectangleStackIcon },
+    { name: 'Reading Goals', to: '/goals', icon: ChartBarIcon },
+    { name: 'Challenges', to: '/challenges', icon: TrophyIcon },
+    { name: 'Activity Feed', to: '/feed', icon: RssIcon },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Navigation */}
-      <nav className="bg-white shadow-sm">
+    <div className="min-h-screen bg-gray-900">
+      <nav className="bg-gray-800 border-b border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex">
-              <Link to="/" className="flex-shrink-0 flex items-center">
-                <span className="text-xl font-bold text-gray-800">
-                  {import.meta.env.VITE_APP_NAME}
-                </span>
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <Link to="/" className="text-2xl font-bold text-white">
+                Biblion
               </Link>
-              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                <Link
-                  to="/"
-                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900"
-                >
-                  Home
-                </Link>
-                <Link
-                  to="/books"
-                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900"
-                >
-                  Books
-                </Link>
-                {user && (
-                  <>
-                    <Link
-                      to="/shelves"
-                      className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900"
-                    >
-                      Shelves
-                    </Link>
-                    <Link
-                      to="/favorites"
-                      className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900"
-                    >
-                      Favorites
-                    </Link>
-                  </>
-                )}
+              <div className="hidden md:block ml-10">
+                <div className="flex space-x-4">
+                  {navigation.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <NavLink
+                        key={item.name}
+                        to={item.to}
+                        className={({ isActive }) =>
+                          classNames(
+                            'flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                            isActive
+                              ? 'bg-gray-900 text-white'
+                              : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                          )
+                        }
+                      >
+                        <Icon className="h-5 w-5 mr-2" />
+                        {item.name}
+                      </NavLink>
+                    );
+                  })}
+                </div>
               </div>
             </div>
-            <div className="hidden sm:ml-6 sm:flex sm:items-center">
-              {user ? (
-                <div className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-500">
-                    Welcome, {user.name}
-                  </span>
-                  <button
-                    onClick={logout}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
-                  >
-                    Logout
-                  </button>
-                </div>
-              ) : (
-                <div className="flex items-center space-x-4">
-                  <Link
-                    to="/login"
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-gray-700 bg-gray-50 hover:bg-gray-100"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-                  >
-                    Register
-                  </Link>
-                </div>
-              )}
+            <div className="flex items-center space-x-4">
+              <Link
+                to={`/users/${user?.id}`}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full text-sm font-medium transition-colors inline-flex items-center"
+              >
+                <UserIcon className="h-5 w-5 mr-2" />
+                {user?.name}
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-full text-sm font-medium transition-colors"
+              >
+                Logout
+              </button>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Main content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {children}
+      <main className="flex-1">
+        <Outlet />
       </main>
-
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-sm text-gray-500">
-            © {new Date().getFullYear()} {import.meta.env.VITE_APP_NAME}. All rights
-            reserved.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 } 
